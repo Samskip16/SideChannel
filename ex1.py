@@ -79,8 +79,10 @@ def plot_correlation(corr_mtrx, max_row):
 
 
 def attack(nr_of_traces):
-    inn = sio.loadmat('in.mat')['in']
-    traces = sio.loadmat('traces.mat')['traces'][:nr_of_traces, :]
+    inn = sio.loadmat('in1.mat')['in']
+    print(inn.shape)
+    traces = sio.loadmat('traces1.mat')['traces'][:nr_of_traces, :]
+    print(traces)
 
     power_mtrx = np.empty((nr_of_traces, 16), dtype=int)
 
@@ -89,6 +91,8 @@ def attack(nr_of_traces):
             inn_val = inn[i][0]
             power_mtrx[i, j] = hw(s_box(xor(inn_val, j)))
 
+
+    print(power_mtrx.shape)
     corr_mtrx = np.corrcoef(traces, power_mtrx, rowvar=False)
     corr_mtrx = corr_mtrx[: len(power_mtrx[0]), len(power_mtrx[0]):]
 
@@ -115,10 +119,10 @@ def attack_nr(nr_of_traces, max_row):
 
 max_row = attack_total()
 
-attack_nr(500, max_row)
-attack_nr(1000, max_row)
-attack_nr(2000, max_row)
-attack_nr(4000, max_row)
-attack_nr(8000, max_row)
-attack_nr(12000, max_row)
-attack_nr(14900, max_row)
+# attack_nr(500, max_row)
+# attack_nr(1000, max_row)
+# attack_nr(2000, max_row)
+# attack_nr(4000, max_row)
+# attack_nr(8000, max_row)
+# attack_nr(12000, max_row)
+# attack_nr(14900, max_row)
