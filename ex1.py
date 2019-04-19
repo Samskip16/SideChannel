@@ -70,7 +70,7 @@ def plot_correlation(corr_mtrx, max_row):
     x_values = np.arange(6990)
 
     for i in range(0, 16):
-        y_values = corr_mtrx[i, :]
+        y_values = np.absolute(corr_mtrx[i, :])
         color = 'red' if i == max_row else 'blue'
 
         plot.line(x_values, y_values, color=color, legend='Absolute correlation')
@@ -82,7 +82,7 @@ def attack(nr_of_traces):
     inn = sio.loadmat('in1.mat')['in']
     print(inn.shape)
     traces = sio.loadmat('traces1.mat')['traces'][:nr_of_traces, :]
-    print(traces)
+    print(traces.shape)
 
     power_mtrx = np.empty((nr_of_traces, 16), dtype=int)
 
@@ -91,10 +91,15 @@ def attack(nr_of_traces):
             inn_val = inn[i][0]
             power_mtrx[i, j] = hw(s_box(xor(inn_val, j)))
 
-
     print(power_mtrx.shape)
     corr_mtrx = np.corrcoef(traces, power_mtrx, rowvar=False)
     corr_mtrx = corr_mtrx[: len(power_mtrx[0]), len(power_mtrx[0]):]
+
+    # corr_mtrx = np.empty((6990, 16), dtype=float)
+    # for i in range(0, 6990):
+    #     for j in range(0, 16):
+    #         temp_corr_mtrx = np.corrcoef(traces[:, i], power_mtrx[:, j], rowvar=False)
+    #         corr_mtrx[i, j] = temp_corr_mtrx[0, 1]
 
     return corr_mtrx
 

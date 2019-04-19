@@ -31,10 +31,10 @@ def process_row_correlation(corr_mtrx):
     return row_correlation
 
 
-def plot_row_correlation(row_correlation):
+def plot_row_correlation(row_correlation, max_row):
     colors = []
     for i in row_correlation:
-        colors.append('blue')
+        colors.append('red' if i == max_row else 'blue')
 
     inc_one = lambda x: x + 1
     legend = 'Row correlation per candidate ' + str(10000) + ' power traces attack'
@@ -43,6 +43,19 @@ def plot_row_correlation(row_correlation):
     plot.vbar(x=np.arange(1, 257), top=inc_one(row_correlation), width=0.9, color=colors, legend=legend)
     plot.xaxis.axis_label = 'Candidate ranking'
     plot.yaxis.axis_label = 'Candidate nr.'
+    show(plot)
+
+
+def plot_correlation(corr_mtrx, max_row):
+    plot = figure(plot_width=1200, plot_height=800)
+    x_values = np.arange(2000)
+
+    for i in range(0, 16):
+        y_values = np.absolute(corr_mtrx[i, :])
+        color = 'red' if i == max_row else 'blue'
+
+        plot.line(x_values, y_values, color=color, legend='Absolute correlation')
+
     show(plot)
 
 
@@ -84,4 +97,8 @@ corr_mtrx = np.corrcoef(hardware_traces, power_mtrx, rowvar=False)
 corr_mtrx = corr_mtrx[: len(power_mtrx[0]), len(power_mtrx[0]):]
 
 row_correlation = process_row_correlation(corr_mtrx)
-plot_row_correlation(row_correlation)
+max_row = row_correlation[0]
+print(max_row)
+
+plot_correlation(corr_mtrx, max_row)
+plot_row_correlation(row_correlation, max_row)
